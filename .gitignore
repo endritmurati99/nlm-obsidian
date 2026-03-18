@@ -1,0 +1,56 @@
+# Environment — all levels
+.env
+.env.local
+**/.env
+**/.env.local
+
+# Claude Code local overrides
+.claude/settings.local.json
+
+# Obsidian workspace state (machine-specific, not vault content)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/plugins/
+.obsidian/cache
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.Python
+*.egg-info/
+dist/
+build/
+
+# Node (if added later)
+node_modules/
+.npm
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Vault assets — PDFs, media, generated files (keep out of public repo)
+Research/assets/*.pdf
+Research/assets/*.mp3
+Research/assets/*.mp4
+Research/assets/*.png
+Research/assets/*.jpg
+Research/assets/*.json
+**/Research/assets/*.pdf
+**/Research/assets/*.mp3
+**/Research/assets/*.mp4
+**/Research/assets/*.png
+**/Research/assets/*.jpg
+**/Research/assets/*.json
+
+# Temp / output artifacts (keep vault clean)
+tmp/
+.tmp/

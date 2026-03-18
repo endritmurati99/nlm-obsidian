@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yt-dlp:*)",
+      "Bash(notebooklm:*)",
+      "Bash(notebook-lm:*)",
+      "Bash(py:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)"
+    ],
+    "deny": []
+  }
+}
