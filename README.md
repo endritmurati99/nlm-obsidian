@@ -1,93 +1,90 @@
-# NLM + Obsidian — Automated Research Pipeline
+# NLM Obsidian
 
-Chains **Claude Code → NotebookLM → Obsidian** into a zero-touch research workflow. Claude Code orchestrates data gathering, NotebookLM handles heavy AI analysis at zero token cost (runs on Google), and Obsidian stores the results as a navigable knowledge graph.
+NLM Obsidian is a research pipeline that connects Claude Code, NotebookLM, YouTube/web/PDF ingestion, and an Obsidian-style Markdown vault.
 
----
+## Current Status
 
-## How It Works
+The repository is an experimental but structured pipeline for collecting sources, delegating heavy analysis to NotebookLM, and writing research notes back into a local vault. It includes Python modules, setup and health-check scripts, tests, docs, and a parallel prototype copy for a newer pipeline shape.
 
+The intended workflow is local-first for storage, with NotebookLM used as an external analysis engine when the user explicitly runs that stage.
+
+## Key Capabilities
+
+- YouTube transcript extraction with `yt-dlp`.
+- NotebookLM CLI integration for analysis deliverables.
+- Markdown research-note generation into an Obsidian vault.
+- Asset handling for generated deliverables.
+- Health checks for required tools, auth state, env files, vault folders, and skills.
+- Unit tests for vault-writing and YouTube helper behavior.
+
+## Workflow
+
+```text
+YouTube URL / web page / PDF
+  -> Claude Code orchestration
+  -> transcript or source extraction
+  -> NotebookLM analysis
+  -> Markdown research note
+  -> Obsidian vault
 ```
-YouTube URL / Web Page / PDF
-        │
-        ▼
-  Claude Code (orchestrator)
-        │  1. Extract transcript via yt-dlp
-        │  2. Feed to NotebookLM for analysis
-        │  3. Write results to Obsidian vault as Markdown
-        ▼
-  Obsidian Vault (this repo root)
-        └── Research notes with [[backlinks]]
-        └── NLM deliverables (infographic, podcast, mindmap, slides)
-```
 
----
+Useful docs:
 
-## Prerequisites
+- [NotebookLM Setup](docs/notebooklm-setup.md)
+- [Original Pipeline Notes](docs/CLaudcode%20+NLM%20+%20Obisadian.md)
+- [Parallel Prototype Architecture](parallel-copy/docs/architecture.md)
 
-| Tool | Purpose |
-|------|---------|
-| [Claude Code](https://claude.ai/code) | Orchestration and skill execution |
-| [Obsidian](https://obsidian.md) | Open this repo as your vault |
-| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | YouTube transcript extraction |
-| [notebooklm CLI](https://github.com/deta/notebooklm) | Unofficial NotebookLM CLI wrapper |
-| Python 3.10+ | Script runtime |
-
----
-
-## Setup
+## Quick Start
 
 ```bash
-# 1. Clone and open this folder as your Obsidian vault
-
-# 2. Copy and fill in environment file
+python3 scripts/setup.py --check-only
 cp .env.example .env
-
-# 3. Authenticate with NotebookLM (run in a separate terminal — opens browser)
 notebooklm login
-
-# 4. Launch Claude Code from this directory
-claude
+python3 scripts/health_check.py
 ```
 
----
+For a first setup run that may install missing Python tools:
+
+```bash
+python3 scripts/setup.py
+```
+
+Launch Claude Code from the repository root after the health check passes.
 
 ## Repository Layout
 
-```
-NLM+Obsidian/
-├── .claude/
-│   └── skills/         # Claude Code skills (Super Skills)
-├── src/                # Pipeline modules
-│   ├── notebooklm.py   # NLM CLI integration
-│   ├── pipeline.py     # Main orchestration logic
-│   ├── vault.py        # Obsidian write utilities
-│   └── youtube.py      # yt-dlp transcript extraction
-├── tests/              # Unit and integration tests
-├── docs/               # Architecture and setup guides
-├── scripts/            # One-off setup and maintenance scripts
-├── Research/           # Generated research notes (vault content)
-├── parallel-copy/      # Experimental parallel pipeline variant
-├── .env.example        # Required environment variables (copy to .env)
-└── CLAUDE.md           # Claude Code instructions and conventions
+```text
+src/             pipeline, NotebookLM, vault, and YouTube modules
+scripts/         setup and health-check commands
+tests/           unit tests
+docs/            setup and architecture notes
+Research/        generated research notes and vault content
+parallel-copy/   experimental second pipeline shape
 ```
 
----
+## Verification
 
-## Skills
+Recommended checks:
 
-Skills live in `.claude/skills/` and are invoked as slash commands inside Claude Code. Create new skills with `/skill creator`.
+```bash
+git diff --check
+python3 -m pytest tests -q
+python3 scripts/health_check.py
+```
 
----
+If the host lacks optional tools such as `yt-dlp` or `notebooklm`, the health check should report the missing dependency clearly.
 
-## Key Concepts
+## Privacy And Safety
 
-- **Super Skill** — A chained Claude Code command that combines sub-routines (YouTube search → NLM analysis → Obsidian write) into a single execution
-- **Vault** — This repo root is the Obsidian vault; launch Claude Code from here so Obsidian picks up file changes in real time
-- **Zero token cost** — NotebookLM analysis (infographics, podcasts, study guides, mindmaps) runs on Google's servers, not on Claude API credits
+- Do not commit real `.env` credentials or OAuth artifacts.
+- Treat NotebookLM as an external Google-backed analysis surface.
+- Avoid sending private or sensitive research material to NotebookLM unless that is intended.
+- Keep generated vault content reviewable before publishing it.
+- Preserve local filesystem boundaries when writing notes and assets.
 
----
+## Roadmap
 
-## Docs
-
-- [docs/notebooklm-setup.md](docs/notebooklm-setup.md) — NotebookLM OAuth setup
-- [docs/architecture.md](docs/architecture.md) — Full system architecture
+- Consolidate the root pipeline and `parallel-copy/` prototype once the better flow is clear.
+- Add stronger setup docs for NotebookLM auth and vault layout.
+- Expand tests around pipeline orchestration and health-check behavior.
+- Improve generated note structure and asset traceability.
